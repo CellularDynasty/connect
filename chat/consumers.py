@@ -87,14 +87,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "message_id": data["message_id"]})
 
     # ---- group dispatch (type dots become underscores) ----
-    async def chat_message(self, event): await self.send(text_data=json.dumps({"type": "chat_message", **event}))
+    async def chat_message(self, event): await self.send(text_data=json.dumps({**event, "type": "chat_message"}))
     async def typing_event(self, event):
         if event.get("sender_channel") != self.channel_name:
-            await self.send(text_data=json.dumps({"type": "typing", **event}))
-    async def presence_event(self, event): await self.send(text_data=json.dumps({"type": "presence", **event}))
-    async def receipt_event(self, event): await self.send(text_data=json.dumps({"type": "read_receipt", **event}))
-    async def edited_event(self, event): await self.send(text_data=json.dumps({"type": "message_edited", **event}))
-    async def deleted_event(self, event): await self.send(text_data=json.dumps({"type": "message_deleted", **event}))
+            await self.send(text_data=json.dumps({**event, "type": "typing"}))
+
+    async def presence_event(self, event): await self.send(text_data=json.dumps({**event, "type": "presence"}))
+    async def receipt_event(self, event): await self.send(text_data=json.dumps({**event, "type": "read_receipt"}))
+    async def edited_event(self, event): await self.send(text_data=json.dumps({**event, "type": "message_edited"}))
+    async def deleted_event(self, event): await self.send(text_data=json.dumps({**event, "type": "message_deleted"}))
+
     async def _error(self, msg): await self.send(text_data=json.dumps({"type": "error", "detail": msg}))
 
     # ---- DB (sync, wrapped) ----
