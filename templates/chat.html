@@ -1,0 +1,33 @@
+{% extends "base.html" %}{% load static %}{% block title %}Messages{% endblock %}
+{% block content %}
+<div class="layout">
+  <aside class="sidebar">
+    <header><strong id="me">…</strong> <button id="profile-btn" title="Edit profile">Profile</button> <button id="logout">Logout</button></header>
+    <input id="user-search" placeholder="Search users…"><div id="search-results"></div>
+    <input id="group-title" placeholder="New group name"><button id="new-group">+ Group (uses checked users)</button>
+    <div id="conversations"></div>
+  </aside>
+  <section class="pane">
+    <header class="chat-top">
+      <span id="chat-header">Select a conversation</span>
+      <span class="top-actions">
+        <input id="msg-search" placeholder="Search messages…">
+        <button id="notif-btn" title="Notifications">🔔 <span id="notif-count"></span></button>
+        <button id="block-btn" title="Block the other user">Block</button>
+        <button id="clear-btn" title="Clear this chat for you">Clear chat</button>
+      </span>
+    </header>
+    <div id="notif-panel" class="panel" hidden></div>
+    <div id="messages"></div>
+    <div id="typing" class="typing"></div>
+    <div id="reply-bar" class="reply-bar" hidden>Replying to a message <button id="reply-cancel" type="button">✕</button></div>
+    <div id="emoji-panel" class="emoji-panel" hidden></div>
+    <form id="send-form">
+      <button type="button" id="emoji-btn" title="Emoji">😊</button>
+      <input id="msg-input" placeholder="Type a message…" autocomplete="off">
+      <label class="file-btn">📎<input id="file-input" type="file" hidden></label>
+      <button>Send</button>
+    </form>
+  </section>
+</div>{% endblock %}
+{% block scripts %}<script src="{% static 'js/chat.js' %}"></script>{% endblock %}

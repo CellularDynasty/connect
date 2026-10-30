@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: realtime_chat
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes: [postgres_data:/var/lib/postgresql/data]
+    ports: ["5432:5432"]
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+  web:
+    build: .
+    command: sh -c "python manage.py migrate && daphne -b 0.0.0.0 -p 8000 realtime_chat.asgi:application"
+    volumes: [.:/app]
+    ports: ["8000:8000"]
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/realtime_chat
+      REDIS_URL: redis://redis:6379/0
+      DJANGO_SECRET_KEY: dev-secret-change-me
+      DJANGO_DEBUG: "True"
+    depends_on: [db, redis]
+volumes:
+  postgres_data:

@@ -1,0 +1,43 @@
+# Render Blueprint — deploy with: Render Dashboard -> New -> Blueprint -> connect this repo -> Apply
+# This creates all 3 resources in the Singapore region: web service + PostgreSQL + Key Value (Redis).
+# If you push this project inside a larger repo (not at the repo root), uncomment rootDir below
+# and set it to the folder that contains manage.py and this render.yaml.
+services:
+  - type: web
+    name: realtime-chat
+    runtime: python
+    region: singapore
+    plan: free
+    # rootDir: realtime_chat_platform_deploy
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput
+    startCommand: daphne -b 0.0.0.0 -p $PORT realtime_chat.asgi:application
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: realtime-chat-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: realtime-chat-redis
+          property: connectionString
+
+  - type: keyvalue
+    name: realtime-chat-redis
+    region: singapore
+    plan: free
+    maxmemoryPolicy: noeviction
+
+databases:
+  - name: realtime-chat-db
+    region: singapore
+    plan: free
+    postgresMajorVersion: "16"

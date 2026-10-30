@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% load static %}{% block title %}Login{% endblock %}
+{% block content %}<main class="auth"><h1>Welcome back</h1>
+<form id="login-form"><input name="username" placeholder="Username" required>
+<input name="password" type="password" placeholder="Password" required>
+<button>Log in</button><p class="err"></p></form>
+<p>No account? <a href="/register/">Register</a></p></main>{% endblock %}
+{% block scripts %}<script src="{% static 'js/auth.js' %}"></script>{% endblock %}
