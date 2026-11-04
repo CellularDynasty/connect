@@ -1,0 +1,50 @@
+{% extends "base.html" %}{% load static %}{% block title %}Settings{% endblock %}
+{% block content %}
+<main class="page-wrap">
+  <header class="page-head"><a class="back-link" href="/">← Chats</a><h1>Settings</h1></header>
+
+  <section class="card">
+    <h3>Appearance</h3>
+    <div class="set-row"><span class="lbl">🌙 Dark mode<small>Off switches this device to the light theme</small></span>
+      <label class="switch"><input type="checkbox" id="theme-toggle"><span class="track"></span></label></div>
+    <h4>Chat background</h4>
+    <div class="swatches" id="wp-presets"></div>
+    <div class="theme-row" style="margin-top:10px">Custom colour <input type="color" id="wp-color" value="#1e293b">
+      <label class="btn-ghost" style="cursor:pointer">🖼️ Upload image<input id="wp-upload" type="file" accept="image/*" hidden></label>
+      <button class="btn-ghost" id="wp-reset" type="button">Reset</button>
+    </div>
+    <p><small>Saved to your account — the same background follows you on every device. <a href="/">Open the chat</a> to see it behind your messages.</small></p>
+  </section>
+
+  <section class="card">
+    <h3>Privacy</h3>
+    <div class="set-row"><span class="lbl">Show online status<small>Off = you always appear offline</small></span>
+      <label class="switch"><input type="checkbox" id="pv-online"><span class="track"></span></label></div>
+    <div class="set-row"><span class="lbl">Show last seen<small>Let others see when you were last active</small></span>
+      <label class="switch"><input type="checkbox" id="pv-lastseen"><span class="track"></span></label></div>
+    <div class="set-row"><span class="lbl">Read receipts<small>Send blue ticks when you read messages</small></span>
+      <label class="switch"><input type="checkbox" id="pv-receipts"><span class="track"></span></label></div>
+    <div class="set-row"><span class="lbl">Discoverable<small>Appear in user search so people can find you</small></span>
+      <label class="switch"><input type="checkbox" id="pv-discoverable"><span class="track"></span></label></div>
+    <div class="set-row"><span class="lbl">Show my email<small>Let other users see your email address</small></span>
+      <label class="switch"><input type="checkbox" id="pv-email"><span class="track"></span></label></div>
+  </section>
+
+  <section class="card">
+    <h3>Account</h3>
+    <p style="margin:4px 0"><small id="s-account">…</small></p>
+    <div id="s-resend-row" hidden>
+      <button class="btn-ghost" id="s-resend" type="button">Resend verification email</button>
+      <span class="ok-msg" id="s-resend-msg"></span>
+    </div>
+    <h4>Change password</h4>
+    <label class="field">Current password<input id="s-cur" type="password" autocomplete="current-password"></label>
+    <label class="field">New password<input id="s-new" type="password" autocomplete="new-password" placeholder="At least 8 characters"></label>
+    <button class="btn-primary" id="s-changepw" type="button">Change password</button><span class="ok-msg" id="s-pwmsg"></span>
+    <p><small>Forgot it instead? Log out and use “Forgot your password?” on the login page — we email you a reset link.</small></p>
+  </section>
+
+  <a class="page-link-row" href="/profile/"><span>👤 Profile</span><small>Picture, name &amp; bio ›</small></a>
+  <button class="btn-ghost" id="s-logout" type="button">⎋ Log out</button>
+</main>{% endblock %}
+{% block scripts %}<script src="{% static 'js/settings.js' %}"></script>{% endblock %}

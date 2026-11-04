@@ -136,6 +136,30 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# --- Email (verification links) ---
+# Local development: if EMAIL_HOST is not set, Django's console backend is
+# used - the verification email (with the clickable link) is printed in the
+# terminal running the server, so the flow can be tested with no mail server.
+# Production: set EMAIL_HOST / EMAIL_HOST_USER / EMAIL_HOST_PASSWORD
+# (e.g. Gmail with an App Password, or any SMTP provider) and emails are
+# really sent. On Render, add these in the dashboard / render.yaml envVars.
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+if EMAIL_HOST:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+    EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "no-reply@localhost")
+# Only used to build links when there is no HTTP request (shell/scripts):
+SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "http://127.0.0.1:8000")
+# Verification tokens (Django's token generator) expire after 3 days:
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 24 * 3
+
 # File upload guardrails
 MAX_UPLOAD_SIZE_MB = 10
-ALLOWED_UPLOAD_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".pdf", ".doc", ".docx", ".txt", ".zip"]
+ALLOWED_UPLOAD_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".pdf", ".doc", ".docx", ".txt", ".zip",
+                             # audio - voice notes (MediaRecorder: webm/mp4/ogg) and common audio files
+                             ".mp3", ".wav", ".ogg", ".webm", ".m4a", ".aac"]

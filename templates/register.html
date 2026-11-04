@@ -1,8 +1,15 @@
 {% extends "base.html" %}{% load static %}{% block title %}Register{% endblock %}
-{% block content %}<main class="auth"><h1>Create account</h1>
-<form id="register-form"><input name="username" placeholder="Username" required>
+{% block content %}<main class="auth">
+<div class="auth-logo" aria-hidden="true">💬</div>
+<h1 class="auth-title">Create account</h1>
+<p class="auth-sub">Quick and easy.</p>
+<form id="register-form"><input name="username" placeholder="Username" required autofocus>
 <input name="email" type="email" placeholder="Email" required>
-<input name="password" type="password" placeholder="Password (min 8 chars)" required>
-<button>Register</button><p class="err"></p></form>
-<p>Already registered? <a href="/login/">Log in</a></p></main>{% endblock %}
+<input name="password" type="password" placeholder="Password (min 8 characters)" required>
+<button class="auth-primary">Sign up</button><p class="err"></p><p class="msg"></p></form>
+<p class="auth-note">We'll send a verification link to your email. Open it before you log in.</p>
+<p class="auth-note">On a local run, the email (with the link) is printed in the server terminal.</p>
+<div class="auth-divider"></div>
+<a class="auth-secondary auth-cta" href="/login/">I already have an account</a>
+</main>{% endblock %}
 {% block scripts %}<script src="{% static 'js/auth.js' %}"></script>{% endblock %}

@@ -44,9 +44,19 @@ class ConversationMember(models.Model):
 
 
 class Message(models.Model):
+    class Kind(models.TextChoices):
+        TEXT = "text", "Text"
+        LOCATION = "location", "Location"
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name="messages")
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_messages")
     body = models.TextField(blank=True)
+    kind = models.CharField(max_length=10, choices=Kind.choices, default=Kind.TEXT)
+    # Location messages (kind=location): a map pin. For LIVE location,
+    # location_live_until is in the future and the SAME message's lat/lng
+    # is updated in place until it expires or the sender stops sharing.
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+    location_live_until = models.DateTimeField(null=True, blank=True)
     reply_to = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name="replies")
     is_edited = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)   # soft-delete so replies/receipts keep context
@@ -56,6 +66,12 @@ class Message(models.Model):
     class Meta:
         ordering = ["created_at"]
         indexes = [models.Index(fields=["conversation", "created_at"])]
+
+    @property
+    def is_live_location(self):
+        from django.utils import timezone
+        return (self.kind == self.Kind.LOCATION and self.location_live_until is not None
+                and self.location_live_until > timezone.now())
 
     def __str__(self):
         return f"Msg {self.pk} by {self.sender_id}: {self.body[:30]}"
@@ -81,6 +97,10 @@ class Attachment(models.Model):
     @property
     def is_image(self):
         return os.path.splitext(self.file.name)[1].lower() in {".jpg", ".jpeg", ".png", ".gif", ".webp"}
+
+    @property
+    def is_audio(self):
+        return os.path.splitext(self.file.name)[1].lower() in {".mp3", ".wav", ".ogg", ".webm", ".m4a", ".aac"}
 
 
 class MessageRead(models.Model):

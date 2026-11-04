@@ -29,12 +29,29 @@ services:
           type: keyvalue
           name: realtime-chat-redis
           property: connectionString
+      # Email verification (v6): fill these in the Render dashboard with your
+      # SMTP details (e.g. Gmail: EMAIL_HOST=smtp.gmail.com, port 587, your
+      # Gmail address as EMAIL_HOST_USER and a Gmail App Password - NOT your
+      # normal password - as EMAIL_HOST_PASSWORD). Until EMAIL_HOST is set,
+      # verification emails are only printed in the service logs.
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: EMAIL_USE_TLS
+        value: "True"
+      - key: DEFAULT_FROM_EMAIL
+        sync: false
 
   - type: keyvalue
     name: realtime-chat-redis
     region: singapore
     plan: free
-    ipAllowList: []
+    ipAllowList: []  # required by Render: internal connections only, no external access
     maxmemoryPolicy: noeviction
 
 databases:

@@ -1,7 +1,20 @@
 {% extends "base.html" %}{% load static %}{% block title %}Login{% endblock %}
-{% block content %}<main class="auth"><h1>Welcome back</h1>
-<form id="login-form"><input name="username" placeholder="Username" required>
+{% block content %}<main class="auth">
+<div class="auth-logo" aria-hidden="true">💬</div>
+<h1 class="auth-title">Log in to Chat</h1>
+<p class="auth-sub">Welcome back.</p>
+<form id="login-form"><input name="username" placeholder="Username" required autofocus>
 <input name="password" type="password" placeholder="Password" required>
-<button>Log in</button><p class="err"></p></form>
-<p>No account? <a href="/register/">Register</a></p></main>{% endblock %}
+<p class="err"></p><button class="auth-primary">Log in</button></form>
+<p class="auth-link-line"><a href="#" id="forgot-toggle">Forgot your password?</a></p>
+<form id="forgot-form" hidden><p class="auth-note">Forgot your password? We'll email you a reset link.</p>
+<input name="email" type="email" placeholder="Your registered email" required>
+<button class="auth-secondary">Email me a reset link</button><p class="msg"></p></form>
+<p class="auth-link-line">Didn't get the verification email? <a href="#" id="resend-toggle">Resend</a></p>
+<form id="resend-form" hidden><p class="auth-note">Enter your email and we'll resend the verification link.</p>
+<input name="email" type="email" placeholder="Your registered email" required>
+<button class="auth-secondary">Resend verification email</button><p class="msg"></p></form>
+<div class="auth-divider"></div>
+<a class="auth-secondary auth-cta" href="/register/">Create new account</a>
+</main>{% endblock %}
 {% block scripts %}<script src="{% static 'js/auth.js' %}"></script>{% endblock %}

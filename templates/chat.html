@@ -2,32 +2,94 @@
 {% block content %}
 <div class="layout">
   <aside class="sidebar">
-    <header><strong id="me">…</strong> <button id="profile-btn" title="Edit profile">Profile</button> <button id="logout">Logout</button></header>
-    <input id="user-search" placeholder="Search users…"><div id="search-results"></div>
-    <input id="group-title" placeholder="New group name"><button id="new-group">+ Group (uses checked users)</button>
-    <div id="conversations"></div>
-  </aside>
-  <section class="pane">
-    <header class="chat-top">
-      <span id="chat-header">Select a conversation</span>
-      <span class="top-actions">
-        <input id="msg-search" placeholder="Search messages…">
-        <button id="notif-btn" title="Notifications">🔔 <span id="notif-count"></span></button>
-        <button id="block-btn" title="Block the other user">Block</button>
-        <button id="clear-btn" title="Clear this chat for you">Clear chat</button>
+    <header class="side-head">
+      <span class="side-brand"><span id="side-me-avatar" class="mobile-only-avatar"></span><h1 class="side-title">Chats</h1></span>
+      <span class="side-actions">
+        <button id="appearance-btn" type="button" class="icon-btn" title="Settings — theme, chat background, privacy">⚙️</button>
+        <button id="sidebar-search-btn" type="button" class="icon-btn" title="Find people">👥</button>
+        <button id="sidebar-new-btn" type="button" class="icon-btn" title="New group">✎</button>
       </span>
     </header>
+    <input id="user-search" class="search-pill" placeholder="Search Chat" aria-label="Search Chat">
+    <div id="search-results"></div>
+    <nav class="filter-tabs" aria-label="Filter conversations">
+      <button type="button" class="filter-tab active" data-filter="all">All</button>
+      <button type="button" class="filter-tab" data-filter="unread">Unread</button>
+      <button type="button" class="filter-tab" data-filter="groups">Groups</button>
+    </nav>
+    <div id="active-row" class="active-row"></div>
+    <details id="group-create" class="group-create">
+      <summary>New group</summary>
+      <input id="group-title" placeholder="New group name"><button id="new-group" type="button">+ Group (uses checked users)</button>
+    </details>
+    <div id="conversations"></div>
+    <footer class="side-footer">
+      <span id="me-wrap"><strong id="me">…</strong></span>
+      <button id="logout" class="icon-btn" title="Log out" aria-label="Log out">⎋</button>
+    </footer>
+  </aside>
+
+  <section class="pane">
+    <header class="chat-top">
+      <span class="chat-title"><button id="back-btn" type="button" title="Back to conversations">←</button> <span id="chat-peer-avatar"></span> <span class="chat-heading"><span id="chat-header">Select a conversation</span><small id="chat-status"></small></span></span>
+      <span class="top-actions">
+        <button id="header-search-btn" type="button" class="icon-btn" title="Search messages">🔍</button>
+        <button id="notif-btn" class="icon-btn" title="Notifications">🔔 <span id="notif-count"></span></button>
+        <button id="info-btn" type="button" class="icon-btn" title="Chat info">ⓘ</button>
+        <button id="block-btn" title="Block the other user" hidden>Block</button>
+        <button id="clear-btn" title="Clear this chat for you" hidden>Clear chat</button>
+      </span>
+    </header>
+    <div id="msg-search-row" class="msg-search-row" hidden><input id="msg-search" placeholder="Search messages…"></div>
     <div id="notif-panel" class="panel" hidden></div>
     <div id="messages"></div>
     <div id="typing" class="typing"></div>
     <div id="reply-bar" class="reply-bar" hidden>Replying to a message <button id="reply-cancel" type="button">✕</button></div>
+    <div id="rec-bar" class="reply-bar" hidden>🔴 Recording voice note… <span id="rec-time">0:00</span> — tap 🎤 again to send, or <button id="rec-cancel" type="button">✕ cancel</button></div>
+    <div id="live-bar" class="reply-bar" hidden>🔴 You are sharing live location <button id="live-stop" type="button">Stop sharing</button></div>
     <div id="emoji-panel" class="emoji-panel" hidden></div>
+    <div id="location-panel" class="emoji-panel" hidden>
+      <button type="button" data-loc="once">📍 Send current location</button>
+      <button type="button" data-loc="15">🔴 Live · 15 min</button>
+      <button type="button" data-loc="60">🔴 Live · 1 hour</button>
+      <button type="button" data-loc="480">🔴 Live · 8 hours</button>
+    </div>
     <form id="send-form">
-      <button type="button" id="emoji-btn" title="Emoji">😊</button>
-      <input id="msg-input" placeholder="Type a message…" autocomplete="off">
-      <label class="file-btn">📎<input id="file-input" type="file" hidden></label>
-      <button>Send</button>
+      <button type="button" id="plus-btn" class="icon-btn" title="Emoji">+</button>
+      <label class="file-btn icon-btn" title="Attach a file">📎<input id="file-input" type="file" hidden></label>
+      <button type="button" id="loc-btn" class="icon-btn" title="Share location">📍</button>
+      <input id="msg-input" placeholder="Aa" autocomplete="off">
+      <button type="button" id="emoji-btn" class="icon-btn" title="Emoji">😊</button>
+      <button type="button" id="mic-btn" class="icon-btn" title="Record a voice note">🎤</button>
+      <button class="send-btn" title="Send" aria-label="Send">➤</button>
     </form>
   </section>
-</div>{% endblock %}
+
+  <aside id="info-panel" class="info-panel">
+    <div class="info-head">
+      <span id="info-avatar"></span>
+      <strong id="info-name">You</strong>
+      <small id="info-status"></small>
+    </div>
+    <div class="info-actions">
+      <span><button id="info-mute-btn" type="button" class="icon-btn big" title="Mute notifications">🔔</button><small id="info-mute-label">Mute</small></span>
+      <span><button id="info-search-btn" type="button" class="icon-btn big" title="Search messages">🔍</button><small>Search</small></span>
+      <span id="info-block-wrap"><button id="info-block-btn" type="button" class="icon-btn big" title="Block">🚫</button><small>Block</small></span>
+    </div>
+    <h4 class="info-section">Chat info</h4>
+    <button id="info-voice-row" type="button" class="info-row">🎤 Voice messages <span id="info-voice-count" class="info-count">0</span></button>
+    <button id="info-media-row" type="button" class="info-row">🖼 Media and files <span class="info-count"><span id="info-media-count">0</span> ›</span></button>
+    <h4 class="info-section">Privacy</h4>
+    <button id="info-block-row" type="button" class="info-row">🚫 Block</button>
+    <button id="info-clear-row" type="button" class="info-row">🗑 Clear chat</button>
+    <h4 class="info-section">My account</h4>
+    <button id="profile-btn" type="button" class="info-row">👤 Profile — picture, name &amp; bio ›</button>
+    <button id="settings-btn" type="button" class="info-row">⚙️ Settings — theme, background, privacy ›</button>
+  </aside>
+</div>
+<nav id="mobile-nav" aria-label="Mobile">
+  <button type="button" class="mobile-nav-btn active" data-nav="chats">💬<small>Chats</small></button>
+  <button type="button" class="mobile-nav-btn" data-nav="groups">👥<small>Groups</small></button>
+  <button type="button" class="mobile-nav-btn" data-nav="profile">👤<small>Profile</small></button>
+</nav>{% endblock %}
 {% block scripts %}<script src="{% static 'js/chat.js' %}"></script>{% endblock %}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<!-- Standalone on purpose: this page must render even if static files /
+     collectstatic are broken, because it is the first page a new user opens. -->
+<html lang="en"><head><meta charset="utf-8"><title>Email verification</title>
+<style>body{font-family:system-ui,sans-serif;background:#000;color:#dff5e3;max-width:420px;margin:60px auto;padding:0 16px;text-align:center}
+input{display:block;width:100%;margin:10px 0;padding:13px 16px;font-size:16px;box-sizing:border-box;background:#0d120e;color:#dff5e3;border:1px solid #2e4f3e;border-radius:14px}
+button{padding:13px 22px;font-size:16px;cursor:pointer;background:#2e4f3e;color:#a9f0bd;border:0;border-radius:99px;width:100%}.err{color:#f0a9a9;text-align:left;background:#131a14;border-radius:12px;padding:8px 12px}a{color:#a9f0bd}</style></head>
+<body>
+{% if ok %}
+  <h1>✅ Email verified</h1>
+  {% if already %}<p>Hi {{ username }}, your email was already verified.</p>
+  {% else %}<p>Thanks {{ username }} — your email is verified. You can log in now.</p>{% endif %}
+  <p><a href="/login/">Go to login</a></p>
+{% else %}
+  <h1>❌ Link invalid or expired</h1>
+  <p>This verification link is not valid any more (links expire after 3 days and stop working once used).</p>
+  <p>Use “Resend verification email” on the login page, or register again.</p>
+  <p><a href="/login/">Go to login</a></p>
+{% endif %}
+</body></html>
